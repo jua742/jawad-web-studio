@@ -140,6 +140,35 @@ form input:focus,form select:focus,form textarea:focus{outline:2px solid var(--a
 .oauth-note{font-size:12px;color:var(--muted)}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;z-index:120;box-shadow:var(--shadow)}
 
+/* Service pages (Phase 4) */
+.breadcrumb{padding:20px 8px 0;font-size:14px;color:var(--muted)}
+.breadcrumb a{color:var(--accent-deep);text-decoration:none}
+.noscript-note{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
+.svc-hero{padding:28px 8px 10px}
+.svc-layout{display:grid;grid-template-columns:1.6fr .8fr;gap:28px;align-items:start}
+@media(max-width:900px){.svc-layout{grid-template-columns:1fr}}
+.svc-section{padding:28px 8px}
+.svc-section p{color:var(--ink)}
+.benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.benefits-grid{grid-template-columns:1fr}}
+.benefit-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 4px 16px rgba(15,35,64,.05)}
+.benefit-card p{margin:0}
+.benefit-mark{width:26px;height:26px;flex:none;border-radius:50%;background:var(--accent-soft);color:var(--accent-deep);display:grid;place-items:center;font-weight:700;font-size:14px}
+.deliverables{list-style:none;padding:0;display:grid;gap:10px}
+.deliverables li{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px 12px 40px;position:relative}
+.deliverables li::before{content:"—";position:absolute;left:16px;color:var(--accent)}
+.svc-side{display:grid;gap:16px;padding-top:28px}
+.svc-cta-card{background:var(--navy);color:#fff;border-radius:20px;padding:22px}
+.svc-cta-card h3{color:#fff}
+.svc-cta-card p{color:#D7DEE8}
+.svc-cta-card .btn{display:flex;justify-content:center;margin:8px 0 0}
+.svc-related{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.svc-related h3{margin-top:0}
+.related-card{display:block;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;text-decoration:none}
+.related-card:hover{border-color:var(--accent)}
+.related-card b{display:block;color:var(--navy);font-family:Fraunces,serif;font-size:17px}
+.related-card span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+
 /* Admin */
 .admin-wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px}
 .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}

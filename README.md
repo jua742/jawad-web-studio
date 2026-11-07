@@ -1,4 +1,4 @@
-# Jawad Web Studio — website (Phase 3)
+# Jawad Web Studio — website (Phase 4)
 
 Premium, minimal, editorial portfolio website for a website studio.
 Stack (code and docs only — the public site never mentions it):
@@ -39,6 +39,34 @@ Premium 3D & Motion Website, Website Redesign, Website Maintenance.
 Every package button says "Request a Custom Quote", opens the contact
 form and preselects that package. The selection is preserved in the
 enquiry (stored as a "Package: …" line at the start of the message).
+
+## Service pages (Phase 4)
+
+11 individual pages at `/services/<slug>`, one shared template
+(`frontend/service.html`) + one content file (`frontend/services-data.js`)
+holding the unique copy for each page, rendered by `frontend/service.js`.
+Routes in `backend/app.py` serve the template with a unique server-side
+`<title>` and meta description per page; unknown slugs return a 404 page.
+Each page has its own introduction, description, 4–6 benefits, 5–7
+deliverables, 3–4 FAQs, related-service links, a breadcrumb
+(Home / Services / Service) and a "Start a Project" CTA.
+
+Slugs: `website-design`, `website-development`, `website-redesign`,
+`ecommerce-websites`, `landing-pages`, `3d-websites`, `motion-websites`,
+`website-fixes`, `website-speed-optimization`, `basic-seo-audit`,
+`website-maintenance`. The 4 services without a dedicated page
+(Business Website Development, Responsive Website Development,
+Website Performance Optimization, Website Updates and Improvements)
+link from the homepage overview straight to the contact form, as before.
+
+CTA preselection across pages: a service page stores the chosen service
+(and package, for "Request a Custom Quote") in `sessionStorage`
+(`jws_preselect_service` / `jws_preselect_package`), then navigates to
+`/#contact`. The homepage reads those keys once on load, sets the form
+selects, clears the keys and scrolls to the contact form. `sessionStorage`
+was chosen over a query string so the selection survives the navigation
+without appearing in the URL; if storage is unavailable the form still
+opens, just without preselection.
 
 ## Contact form
 
@@ -83,6 +111,9 @@ jawad-web-studio-code/
 ├── .gitignore
 ├── frontend/
 │   ├── index.html
+│   ├── service.html      # Phase 4 template for /services/<slug>
+│   ├── services-data.js  # Phase 4 unique copy for the 11 service pages
+│   ├── service.js        # Phase 4 renderer + shared nav/auth
 │   ├── styles.css
 │   ├── script.js
 │   └── admin.html

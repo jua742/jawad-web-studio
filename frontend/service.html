@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>__PAGE_TITLE__</title>
+<meta name="description" content="__PAGE_META__">
+<meta property="og:type" content="website">
+<meta property="og:title" content="__PAGE_TITLE__">
+<meta property="og:description" content="__PAGE_META__">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body data-service-slug="__SLUG__">
+<a class="skip-link" href="#service-main">Skip to service</a>
+
+<header class="site-header">
+  <nav class="nav-pill" aria-label="Main navigation">
+    <a class="logo" href="/" aria-label="Jawad Web Studio home">
+      <span class="logo-mark">J</span><span class="logo-text">Jawad <em>Web Studio</em></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="/#work">Work</a>
+      <a href="/#services">Services</a>
+      <a href="/#pricing">Packages</a>
+      <a href="/#process">Process</a>
+      <a href="/#faq">FAQ</a>
+      <a href="/#contact">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-dark btn-sm" href="/#contact">Start a Project</a>
+      <button class="btn btn-ghost btn-sm" id="loginBtn" type="button">Log in</button>
+      <button class="btn btn-ghost btn-sm hidden" id="accountBtn" type="button">My account</button>
+      <button class="btn btn-ghost btn-sm hidden" id="logoutBtn" type="button">Log out</button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+    </div>
+  </nav>
+  <div class="mobile-menu hidden" id="mobileMenu">
+    <a href="/#work">Work</a>
+    <a href="/#services">Services</a>
+    <a href="/#pricing">Packages</a>
+    <a href="/#process">Process</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/#contact">Contact</a>
+    <button class="btn btn-dark" id="mobileLoginBtn" type="button">Log in / Sign up</button>
+  </div>
+</header>
+
+<main id="service-main">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a> <span aria-hidden="true">/</span>
+    <a href="/#services">Services</a> <span aria-hidden="true">/</span>
+    <span id="crumbService" aria-current="page">Service</span>
+  </nav>
+  <noscript><p class="noscript-note">This service page needs scripts enabled to show its content. Please use the <a href="/#contact">contact form</a> on the homepage to start a project.</p></noscript>
+
+  <!-- HERO -->
+  <section class="svc-hero reveal">
+    <p class="eyebrow">Services</p>
+    <h1 id="svcTitle">Service</h1>
+    <p class="hero-sub" id="svcIntro"></p>
+    <div class="hero-cta">
+      <button class="btn btn-copper" id="ctaTop" type="button">Start a Project <span aria-hidden="true">→</span></button>
+      <a class="btn btn-outline" href="/#services">View all services</a>
+    </div>
+  </section>
+
+  <div class="svc-layout">
+    <div class="svc-main">
+      <!-- DESCRIPTION -->
+      <section class="svc-section reveal" id="svcDescWrap">
+        <div class="section-head"><span class="section-number">01</span><span class="section-label">About this service</span></div>
+        <div id="svcDesc"></div>
+      </section>
+
+      <!-- BENEFITS -->
+      <section class="svc-section reveal">
+        <div class="section-head"><span class="section-number">02</span><span class="section-label">Why it helps</span></div>
+        <h2>What this service gives you.</h2>
+        <div class="benefits-grid" id="benefitsGrid"></div>
+      </section>
+
+      <!-- DELIVERABLES -->
+      <section class="svc-section reveal">
+        <div class="section-head"><span class="section-number">03</span><span class="section-label">What is included</span></div>
+        <h2>What you receive.</h2>
+        <ul class="deliverables" id="deliverablesList"></ul>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq svc-section reveal">
+        <div class="section-head"><span class="section-number">04</span><span class="section-label">Questions</span></div>
+        <h2>Questions about this service.</h2>
+        <div id="faqList"></div>
+      </section>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="svc-side">
+      <div class="svc-cta-card reveal">
+        <h3>Start a project</h3>
+        <p id="ctaCardText">Tell us about your project and we will reply with a custom quote.</p>
+        <button class="btn btn-copper" id="ctaSide" type="button">Start a Project</button>
+        <button class="btn btn-outline btn-light" id="ctaQuote" type="button">Request a Custom Quote</button>
+      </div>
+      <div class="svc-related reveal">
+        <h3>Related services</h3>
+        <div id="relatedGrid"></div>
+        <p><a href="/#services">View all 15 services →</a></p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><b>Jawad Web Studio</b><p>A website studio. Design, development, redesign and maintenance.</p></div>
+    <div><b>Explore</b><a href="/#services">Services</a><a href="/#work">Work</a><a href="/#pricing">Packages</a><a href="/#process">Process</a><a href="/#faq">FAQ</a><a href="/#contact">Contact</a></div>
+    <div><b>Account</b><button class="footer-link-btn" id="footerLogin" type="button">Log in / Sign up</button><a href="/admin.html">Admin panel</a><a href="/#contact">Contact</a></div>
+  </div>
+  <p class="footer-note">© 2026 Jawad Web Studio</p>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal hidden" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="authClose" type="button" aria-label="Close">×</button>
+    <h3 id="authTitle">Welcome back — sign in</h3>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-mode="login" type="button">Log in</button>
+      <button class="auth-tab" data-mode="register" type="button">Sign up</button>
+    </div>
+    <form id="authForm">
+      <label>Name (sign up only) <input name="name" id="authName" autocomplete="name" placeholder="Your name"></label>
+      <label>Email <input name="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password <input name="password" type="password" required autocomplete="current-password" minlength="6" placeholder="At least 6 characters"></label>
+      <button class="btn btn-dark" type="submit" id="authSubmit">Log in</button>
+      <p class="form-msg" id="authMsg" role="status" aria-live="polite"></p>
+    </form>
+    <div class="oauth">
+      <button class="btn btn-outline oauth-btn" id="googleBtn" type="button">Continue with Google</button>
+      <button class="btn btn-outline oauth-btn" id="githubBtn" type="button">Continue with GitHub</button>
+      <p class="oauth-note">Google and GitHub sign-in are not live yet — they need the studio’s own client IDs in Admin → Settings. Email login works now. No fake sign-in is used.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+<script src="/services-data.js" defer></script>
+<script src="/service.js" defer></script>
+</body>
+</html>

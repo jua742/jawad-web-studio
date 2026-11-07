@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -335,9 +335,48 @@ def admin_update_booking(booking_id: int, payload: StatusIn, _admin: User = Depe
 
 
 # ---------- frontend (served last, so /api/* wins) ----------
+# Phase 4 service pages: slug -> (page <title>, meta description).
+# Titles/meta must stay in sync with frontend/services-data.js.
+SERVICE_PAGES = {
+    "website-design": ("Website Design — Jawad Web Studio", "Custom website design for your business: clear layout, considered typography and a look that fits your brand. Request a custom quote."),
+    "website-development": ("Website Development — Jawad Web Studio", "Your approved design built as a fast, responsive website that works across phones, tablets and desktop. Request a custom quote."),
+    "website-redesign": ("Website Redesign — Jawad Web Studio", "An existing website rebuilt with a clearer structure, a fresh look and a better experience for your visitors. Request a custom quote."),
+    "ecommerce-websites": ("E-commerce Websites — Jawad Web Studio", "An online store where customers can browse products, add to cart and check out. Request a custom quote."),
+    "landing-pages": ("Landing Pages — Jawad Web Studio", "A focused single page built around one offer, with a clear message and a clear next step. Request a custom quote."),
+    "3d-websites": ("3D Websites — Jawad Web Studio", "A website with carefully crafted three-dimensional elements that add depth where it suits the design. Request a custom quote."),
+    "motion-websites": ("Motion Websites — Jawad Web Studio", "Subtle scroll and motion that guides visitors through the page without distracting from the content. Request a custom quote."),
+    "website-fixes": ("Website Fixes — Jawad Web Studio", "Broken layouts, forms that do not send, links that go nowhere — found and fixed. Request a custom quote."),
+    "website-speed-optimization": ("Website Speed Optimization — Jawad Web Studio", "Faster loading pages, tuned images and leaner code, so visitors do not wait. Request a custom quote."),
+    "basic-seo-audit": ("Basic SEO Audit — Jawad Web Studio", "A basic technical check of your site — structure, titles, descriptions and the issues search engines notice first. Request a custom quote."),
+    "website-maintenance": ("Website Maintenance — Jawad Web Studio", "Ongoing care for your website: updates, small changes and checks that it stays working. Request a custom quote."),
+}
+
+
 @app.get("/")
 def root():
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+
+
+@app.get("/services/{slug}")
+def service_page(slug: str):
+    page = SERVICE_PAGES.get(slug)
+    if not page:
+        return HTMLResponse(
+            content="<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">"
+                    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                    "<title>Service not found — Jawad Web Studio</title>"
+                    "<link rel=\"stylesheet\" href=\"/styles.css\"></head><body>"
+                    "<main style=\"max-width:680px;margin:80px auto;padding:0 20px\">"
+                    "<h1>Service not found</h1><p>This service page does not exist.</p>"
+                    "<p><a class=\"btn btn-dark\" href=\"/#services\">View all services</a></p>"
+                    "</main></body></html>",
+            status_code=404)
+    title, meta = page
+    with open(os.path.join(FRONTEND_DIR, "service.html"), encoding="utf-8") as f:
+        html = f.read()
+    # Server-side title/meta so each page is unique even before JS runs.
+    html = html.replace("__PAGE_TITLE__", title).replace("__PAGE_META__", meta).replace("__SLUG__", slug)
+    return HTMLResponse(content=html)
 
 
 @app.get("/admin.html")

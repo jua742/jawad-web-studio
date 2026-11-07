@@ -42,6 +42,39 @@
     $$('a', mobileMenu).forEach(a => a.addEventListener('click', closeMenu));
   }
 
+  /* --- Cross-page preselection (Phase 4): a service page stores the
+     chosen service/package in sessionStorage, then navigates to /#contact.
+     The homepage reads it once, sets the form, and clears it. --- */
+  function applyPreselection() {
+    try {
+      const svc = sessionStorage.getItem('jws_preselect_service');
+      const pkg = sessionStorage.getItem('jws_preselect_package');
+      const sel = $('#inquiryService'), psel = $('#inquiryPackage');
+      if (svc && sel) { sel.value = svc; sessionStorage.removeItem('jws_preselect_service'); }
+      if (pkg && psel) { psel.value = pkg; sessionStorage.removeItem('jws_preselect_package'); }
+      if ((svc || pkg) && window.location.hash === '#contact') {
+        toast('Selected: ' + (svc || pkg) + ' — describe your project below.');
+        const c = document.getElementById('contact'); if (c) c.scrollIntoView();
+      }
+    } catch (e) { /* storage unavailable: form works without preselection */ }
+  }
+
+  /* Phase 4: seeded service name -> dedicated service page slug.
+     The 4 services without a page keep the contact-form link only. */
+  const SERVICE_PAGES = {
+    'Custom Website Design': 'website-design',
+    'Website Development': 'website-development',
+    'Website Redesign': 'website-redesign',
+    'E-commerce Website Development': 'ecommerce-websites',
+    'Landing Page Design & Development': 'landing-pages',
+    'Premium 3D Website Development': '3d-websites',
+    'Motion & Scroll Animation Websites': 'motion-websites',
+    'Website Fixes & Bug Fixing': 'website-fixes',
+    'Website Speed Optimization': 'website-speed-optimization',
+    'Basic Technical SEO Audit': 'basic-seo-audit',
+    'Website Maintenance': 'website-maintenance'
+  };
+
   /* --- Quote flow: preselect a package in the contact form --- */
   function requestQuote(packageName) {
     const sel = $('#inquiryPackage');
@@ -55,9 +88,12 @@
     try {
       const services = await api('/api/services');
       const grid = $('#serviceGrid');
-      if (grid) grid.innerHTML = services.map(s =>
-        '<article class="service-card"><span class="svc-tag">Website service</span><h3>' + esc(s.name) + '</h3><p>' + esc(s.description || '') + '</p>' +
-        '<button class="btn btn-outline btn-sm" type="button" data-service="' + esc(s.name) + '">Enquire about this</button></article>').join('');
+      if (grid) grid.innerHTML = services.map(s => {
+        const slug = SERVICE_PAGES[s.name];
+        const viewLink = slug ? '<a class="btn btn-outline btn-sm" href="/services/' + slug + '">View service</a> ' : '';
+        return '<article class="service-card"><span class="svc-tag">Website service</span><h3>' + esc(s.name) + '</h3><p>' + esc(s.description || '') + '</p>' +
+        viewLink + '<button class="btn btn-outline btn-sm" type="button" data-service="' + esc(s.name) + '">Enquire about this</button></article>';
+      }).join('');
       $$('#serviceGrid [data-service]').forEach(b => b.addEventListener('click', () => {
         const sel = $('#inquiryService'); if (sel) sel.value = b.dataset.service;
         goToContact();
@@ -201,5 +237,6 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAuth(); closeCaseModal(); closeMenu(); } });
   updateAuthUI();
+  applyPreselection();
   loadContent();
 })();
