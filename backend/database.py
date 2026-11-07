@@ -1,4 +1,4 @@
-"""SQLite database setup + seed data (draft, editable in admin)."""
+"""SQLite database setup + seed data (Phase 3: 15 approved services, 6 quote packages, no sample projects, no prices)."""
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -21,30 +21,43 @@ def get_db():
 
 
 def seed_data():
-    """Seed 6 services, 4 sample projects, 3 USD plans — only if tables are empty."""
+    """Seed the 15 approved website services and the 6 quote packages.
+
+    No sample projects are seeded (the Selected Work section is an
+    empty state until real projects are added). No prices are seeded:
+    every package is quoted on scope ("Request a Custom Quote").
+    """
     db = SessionLocal()
     try:
         if db.query(Service).count() == 0:
             db.add_all([
-                Service(name="Web Design", description="Modern, responsive website design with a premium editorial look — warm ivory, deep navy, teal and copper.", price_from=249, price_to=799),
-                Service(name="Web Development", description="Hand-coded HTML, CSS and JavaScript frontends with clean, fast, accessible markup.", price_from=499, price_to=1499),
-                Service(name="UI/UX Design", description="User research, wireframes, prototypes and design systems that are easy to use.", price_from=299, price_to=999),
-                Service(name="E-commerce", description="Online stores with product pages, cart, checkout and order management.", price_from=799, price_to=1499),
-                Service(name="SEO", description="Technical SEO, on-page optimisation and performance so customers can find you.", price_from=249, price_to=699),
-                Service(name="Python/FastAPI Backend", description="FastAPI backends, REST APIs, auth and SQLite/Postgres databases for real apps.", price_from=499, price_to=1499),
+                Service(name="Custom Website Design", description="A website designed around your business, your content and your customers — clear layout, considered typography and a look that fits your brand.", price_from=0, price_to=None),
+                Service(name="Website Development", description="Your approved design built as a fast, responsive website that works across phones, tablets and desktop.", price_from=0, price_to=None),
+                Service(name="Website Redesign", description="An existing website rebuilt with a clearer structure, a fresh look and a better experience for your visitors.", price_from=0, price_to=None),
+                Service(name="Business Website Development", description="A complete website for your business: services, about, contact and everything a visitor needs to reach you.", price_from=0, price_to=None),
+                Service(name="E-commerce Website Development", description="An online store where customers can browse products, add to cart and check out.", price_from=0, price_to=None),
+                Service(name="Landing Page Design & Development", description="A focused single page built around one offer, with a clear message and a clear next step.", price_from=0, price_to=None),
+                Service(name="Premium 3D Website Development", description="A website with carefully crafted three-dimensional elements that add depth where it suits the design.", price_from=0, price_to=None),
+                Service(name="Motion & Scroll Animation Websites", description="Subtle scroll and motion that guides visitors through the page without distracting from the content.", price_from=0, price_to=None),
+                Service(name="Responsive Website Development", description="Your website checked and tuned so it reads and works well on every screen size.", price_from=0, price_to=None),
+                Service(name="Website Fixes & Bug Fixing", description="Broken layouts, forms that do not send, links that go nowhere — found and fixed.", price_from=0, price_to=None),
+                Service(name="Website Performance Optimization", description="A review of what slows your site down, with the fixes that make it load and respond faster.", price_from=0, price_to=None),
+                Service(name="Website Speed Optimization", description="Faster loading pages, tuned images and leaner code, so visitors do not wait.", price_from=0, price_to=None),
+                Service(name="Basic Technical SEO Audit", description="A basic technical check of your site — structure, titles, descriptions and the issues search engines notice first.", price_from=0, price_to=None),
+                Service(name="Website Maintenance", description="Ongoing care for your website: updates, small changes and checks that it stays working.", price_from=0, price_to=None),
+                Service(name="Website Updates and Improvements", description="Small changes and improvements to your existing website, made carefully and tested before they go live.", price_from=0, price_to=None),
             ])
-        if db.query(Project).count() == 0:
-            db.add_all([
-                Project(title="Sample Storefront", category="E-commerce", client_label="Sample project — Sample Store", description="A sample online store with product grid, cart and checkout flow."),
-                Project(title="Sample Agency Site", category="Web Design", client_label="Sample project — Sample Studio", description="A sample agency portfolio with a 3D work ribbon and case-study cards."),
-                Project(title="Sample Dashboard App", category="Web Development", client_label="Sample project — Sample App", description="A sample dashboard with login, admin panel and data tables."),
-                Project(title="Sample Brand Redesign", category="UI/UX Design", client_label="Sample project — Sample Brand", description="A sample brand and website redesign with a new palette and type system."),
-            ])
+        # No projects are seeded on purpose: the Selected Work section
+        # shows "Selected projects will be showcased here." until the
+        # studio adds real projects in the admin panel.
         if db.query(Plan).count() == 0:
             db.add_all([
-                Plan(name="Starter", price=499, description="A clean one-page / small business website.", features="Up to 5 pages\nResponsive design\nContact form\nSEO basics\n1 week delivery"),
-                Plan(name="Business", price=999, description="A full business website with CMS-style admin.", features="Up to 12 pages\nAdmin panel\nBlog / portfolio\nBooking or inquiry forms\n2 weeks delivery"),
-                Plan(name="Pro Web App", price=1999, description="A full web app with auth, database and admin.", features="Custom web app\nLogin / signup + admin\nPython / FastAPI backend\nDatabase + APIs\nPriority support"),
+                Plan(name="Landing Page", price=0, description="A single focused page for one offer or campaign.", features="One page, designed and built\nContact or enquiry form\nResponsive on all devices\nBasic technical SEO check"),
+                Plan(name="Business Website", price=0, description="A complete website for your business.", features="Up to 5 pages\nServices, about and contact\nEnquiry form\nResponsive on all devices"),
+                Plan(name="E-commerce Website", price=0, description="An online store for your products.", features="Product pages\nCart and checkout\nOrder management\nResponsive on all devices"),
+                Plan(name="Premium 3D & Motion Website", price=0, description="A website with 3D elements and scroll motion.", features="Custom 3D elements\nScroll animations\nDesigned around your brand\nResponsive on all devices"),
+                Plan(name="Website Redesign", price=0, description="Your existing website, rebuilt.", features="New design, same content refined\nClearer structure\nResponsive on all devices\nChecked before launch"),
+                Plan(name="Website Maintenance", price=0, description="Ongoing care for your website.", features="Regular updates\nSmall changes included\nChecks that it stays working\nSupport by enquiry"),
             ])
         db.commit()
     finally:

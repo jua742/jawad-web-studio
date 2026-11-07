@@ -22,7 +22,7 @@
   <h1>Admin panel</h1>
   <p id="adminMsg" role="status">Checking your session…</p>
   <div id="adminContent" class="hidden">
-    <p>Signed in as <b id="adminEmail"></b>. First registered user is the admin. Prices below are draft USD prices — edit them here.</p>
+    <p>Signed in as <b id="adminEmail"></b>. First registered user is the admin. Packages are quoted on scope — no prices are shown on the public site.</p>
     <div class="admin-grid">
       <div class="stat"><strong id="statServices">–</strong><span>Services</span></div>
       <div class="stat"><strong id="statPlans">–</strong><span>Pricing plans</span></div>
@@ -43,8 +43,8 @@
     </section>
 
     <section class="admin-section">
-      <h2>Pricing plans (USD)</h2>
-      <table class="admin-table"><thead><tr><th>Name</th><th>Price $</th><th>Description</th><th></th></tr></thead>
+      <h2>Pricing packages (quoted on scope — no price shown)</h2>
+      <table class="admin-table"><thead><tr><th>Name</th><th>Description</th><th></th></tr></thead>
       <tbody id="planRows"></tbody></table>
     </section>
 
@@ -54,8 +54,8 @@
       <tbody id="projectRows"></tbody></table>
       <h3>Add project</h3>
       <form id="addProjectForm"><label>Title <input name="title" required></label>
-        <label>Category <input name="category" value="Web Design"></label>
-        <label>Client label <input name="client_label" value="Sample project"></label>
+        <label>Category <input name="category" value="Website"></label>
+        <label>Client label <input name="client_label" value="" placeholder="Optional — only for real projects"></label>
         <label>Description <textarea name="description" rows="2"></textarea></label>
         <button class="btn btn-dark" type="submit">Add project</button></form>
     </section>
@@ -133,7 +133,6 @@
         '<td><button type="button" data-save-svc="' + s.id + '">Save</button> <button type="button" data-del-svc="' + s.id + '">Delete</button></td></tr>').join('');
       document.getElementById('planRows').innerHTML = plans.map(p =>
         '<tr><td><input value="' + esc(p.name) + '" data-plan-name="' + p.id + '"></td>' +
-        '<td><input type="number" value="' + p.price + '" data-plan-price="' + p.id + '"></td>' +
         '<td><input value="' + esc(p.description || '') + '" data-plan-desc="' + p.id + '"></td>' +
         '<td><button type="button" data-save-plan="' + p.id + '">Save</button></td></tr>').join('');
       document.getElementById('projectRows').innerHTML = projects.map(p =>
@@ -161,7 +160,7 @@
           if (t.dataset.delUser) { if (confirm('Delete this user account?')) { await api('/api/admin/users/' + t.dataset.delUser, { method: 'DELETE' }); load(); } }
           if (t.dataset.saveSvc) { const id = t.dataset.saveSvc; await api('/api/admin/services/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-svc-name="' + id + '"]'), description: get('[data-svc-desc="' + id + '"]'), price_from: Number(get('[data-svc-from="' + id + '"]')), price_to: Number(get('[data-svc-to="' + id + '"]')) || null }) }); msg.textContent = 'Service saved.'; }
           if (t.dataset.delSvc) { if (confirm('Delete this service?')) { await api('/api/admin/services/' + t.dataset.delSvc, { method: 'DELETE' }); load(); } }
-          if (t.dataset.savePlan) { const id = t.dataset.savePlan; await api('/api/admin/plans/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-plan-name="' + id + '"]'), price: Number(get('[data-plan-price="' + id + '"]')), description: get('[data-plan-desc="' + id + '"]') }) }); msg.textContent = 'Plan saved.'; }
+          if (t.dataset.savePlan) { const id = t.dataset.savePlan; await api('/api/admin/plans/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-plan-name="' + id + '"]'), price: 0, description: get('[data-plan-desc="' + id + '"]') }) }); msg.textContent = 'Package saved.'; }
           if (t.dataset.delProj) { if (confirm('Delete this project?')) { await api('/api/admin/projects/' + t.dataset.delProj, { method: 'DELETE' }); load(); } }
           if (t.dataset.saveInq) { const id = t.dataset.saveInq; await api('/api/admin/inquiries/' + id, { method: 'PUT', body: JSON.stringify({ status: get('[data-inq-status="' + id + '"]') }) }); msg.textContent = 'Inquiry saved.'; }
           if (t.dataset.saveBook) { const id = t.dataset.saveBook; await api('/api/admin/bookings/' + id, { method: 'PUT', body: JSON.stringify({ status: get('[data-book-status="' + id + '"]') }) }); msg.textContent = 'Booking saved.'; }

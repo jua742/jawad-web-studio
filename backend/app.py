@@ -78,7 +78,9 @@ class LoginIn(BaseModel):
 class InquiryIn(BaseModel):
     name: str
     email: EmailStr
+    business: str = ""
     service: str = ""
+    package: str = ""
     budget: str = ""
     message: str = ""
 
@@ -99,14 +101,14 @@ class ServiceIn(BaseModel):
 
 class PlanIn(BaseModel):
     name: str
-    price: float
+    price: float = 0  # unused on the public site (quotes only); kept for admin compatibility
     description: str = ""
 
 
 class ProjectIn(BaseModel):
     title: str
-    category: str = "Web Design"
-    client_label: str = "Sample project"
+    category: str = "Website"
+    client_label: str = ""
     description: str = ""
 
 
@@ -149,7 +151,15 @@ def list_plans(db: Session = Depends(get_db)):
 
 @app.post("/api/inquiries", status_code=201)
 def create_inquiry(payload: InquiryIn, db: Session = Depends(get_db)):
-    row = Inquiry(name=payload.name, email=payload.email, service=payload.service, budget=payload.budget, message=payload.message)
+    # Business name and package are stored as a prefix on the message
+    # (no extra columns): "Business: X" / "Package: Y" lines first.
+    message = payload.message or ""
+    prefix = ""
+    if payload.business:
+        prefix += "Business: " + payload.business.strip() + "\n"
+    if payload.package:
+        prefix += "Package: " + payload.package.strip() + "\n"
+    row = Inquiry(name=payload.name, email=payload.email, service=payload.service, budget=payload.budget, message=prefix + message)
     db.add(row); db.commit(); db.refresh(row)
     return {"id": row.id, "status": row.status}
 

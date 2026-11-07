@@ -34,7 +34,7 @@ class Service(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(120), nullable=False)
     description = Column(Text, default="")
-    price_from = Column(Float, default=249)
+    price_from = Column(Float, default=0)
     price_to = Column(Float, nullable=True)
 
 
@@ -42,8 +42,8 @@ class Project(Base):
     __tablename__ = "projects"
     id = Column(Integer, primary_key=True)
     title = Column(String(200), nullable=False)
-    category = Column(String(120), default="Web Design")
-    client_label = Column(String(200), default="Sample project")
+    category = Column(String(120), default="Website")
+    client_label = Column(String(200), default="")
     description = Column(Text, default="")
 
 
@@ -51,7 +51,7 @@ class Plan(Base):
     __tablename__ = "plans"
     id = Column(Integer, primary_key=True)
     name = Column(String(120), nullable=False)
-    price = Column(Float, nullable=False)  # USD, one-time, draft
+    price = Column(Float, nullable=False, default=0)  # 0 = quoted on scope; no fixed prices are shown
     description = Column(Text, default="")
     features = Column(Text, default="")  # newline-separated
 
