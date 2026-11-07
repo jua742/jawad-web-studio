@@ -55,10 +55,11 @@
         document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         toast('Service selected: ' + b.dataset.service);
       }));
-    } catch (e) { const g = $('#serviceGrid'); if (g) g.innerHTML = '<p>Services could not be loaded. Is the backend running on port 8000?</p>'; }
+    } catch (e) { const g = $('#serviceGrid'); if (g) g.innerHTML = '<p>Services could not be loaded. Please refresh the page.</p>'; }
 
     try {
       const projects = await api('/api/projects');
+      window.__jwsProjects = projects;
       const ribbon = $('#ribbon'), workGrid = $('#workGrid');
       const art = ['🎨', '🛍️', '📱', '🌐'];
       if (ribbon) ribbon.innerHTML = projects.map((p, i) =>
@@ -71,9 +72,12 @@
         '<h3>' + esc(p.title) + '</h3><p>' + esc(p.description || '') + '</p>' +
         '<p><span class="tag">' + esc(p.category || 'Web') + '</span> · ' + esc(p.client_label || 'Sample project') + '</p>' +
         '<button class="btn btn-outline btn-sm" type="button" data-project="' + esc(p.title) + '">View case study</button></article>').join('');
-      $$('#workGrid [data-project]').forEach(b => b.addEventListener('click', () => toast(b.dataset.project + ' — sample case study. Full details on request.')));
+      $$('#workGrid [data-project]').forEach(b => b.addEventListener('click', () => {
+        const p = (window.__jwsProjects || []).find(x => x.title === b.dataset.project);
+        if (p) openCaseModal(p); else toast(b.dataset.project + ' — sample case study. Full details on request.');
+      }));
       initRibbon();
-    } catch (e) { const r = $('#ribbon'); if (r) r.innerHTML = '<p>Projects could not be loaded.</p>'; }
+    } catch (e) { const r = $('#ribbon'); if (r) r.innerHTML = '<p>Projects could not be loaded. Please refresh the page.</p>'; }
 
     try {
       const plans = await api('/api/plans');
@@ -85,7 +89,7 @@
         '<p>' + esc(p.description || '') + '</p><ul>' + (p.features || []).map(f => '<li>' + esc(f) + '</li>').join('') + '</ul>' +
         '<button class="btn btn-copper" type="button" data-book-plan="' + p.id + '" data-plan-name="' + esc(p.name) + '" data-plan-price="' + p.price + '">Book this plan</button></article>').join('');
       $$('#planGrid [data-book-plan]').forEach(b => b.addEventListener('click', () => openBookModal(b.dataset.bookPlan, b.dataset.planName, b.dataset.planPrice)));
-    } catch (e) { const pg = $('#planGrid'); if (pg) pg.innerHTML = '<p>Pricing could not be loaded.</p>'; }
+    } catch (e) { const pg = $('#planGrid'); if (pg) pg.innerHTML = '<p>Pricing could not be loaded. Please refresh the page.</p>'; }
   }
 
   /* --- 3D ribbon: drag / scroll / arrows --- */
@@ -152,6 +156,25 @@
     } catch (err) { msg.textContent = 'Could not send: ' + err.message; msg.className = 'form-msg err'; }
   });
 
+  /* --- Case study modal --- */
+  const caseModal = $('#caseModal');
+  function openCaseModal(p) {
+    $('#caseTitle').textContent = p.title;
+    $('#caseMeta').textContent = (p.category || 'Web') + ' · ' + (p.client_label || 'Sample project');
+    $('#caseDesc').textContent = p.description || '';
+    caseModal.classList.remove('hidden');
+  }
+  function closeCaseModal() { if (caseModal) caseModal.classList.add('hidden'); }
+  if (caseModal) {
+    $('#caseClose').addEventListener('click', closeCaseModal);
+    caseModal.addEventListener('click', e => { if (e.target === caseModal) closeCaseModal(); });
+    $('#caseEnquire').addEventListener('click', () => {
+      closeCaseModal();
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+      toast('Tell us about your project in the inquiry form.');
+    });
+  }
+
   /* --- Booking modal --- */
   const bookModal = $('#bookModal'); let bookingPlanId = null;
   function openBookModal(planId, name, price) {
@@ -169,6 +192,7 @@
     try {
       await api('/api/bookings', { method: 'POST', body: JSON.stringify({ plan_id: Number(bookingPlanId), name: fd.get('name'), email: fd.get('email'), notes: fd.get('notes') }) });
       msg.textContent = 'Booking request sent ✓'; msg.className = 'form-msg ok'; e.target.reset();
+      setTimeout(closeBookModal, 1400);
     } catch (err) { msg.textContent = 'Could not send: ' + err.message; msg.className = 'form-msg err'; }
   });
   $$('[data-book-cta]').forEach(b => b.addEventListener('click', () => { /* anchor already scrolls to #contact */ }));
@@ -242,7 +266,7 @@
     } catch (e) { box.textContent = 'Could not load requests: ' + e.message; }
   });
 
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAuth(); closeBookModal(); closeMenu(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAuth(); closeBookModal(); closeCaseModal(); closeMenu(); } });
   updateAuthUI();
   loadContent();
 })();

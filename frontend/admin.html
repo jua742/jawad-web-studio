@@ -73,6 +73,13 @@
     </section>
 
     <section class="admin-section">
+      <h2>Users</h2>
+      <p>First registered user is the admin. Delete a test account here to free the admin seat — you cannot delete your own account.</p>
+      <table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Admin</th><th></th></tr></thead>
+      <tbody id="userRows"></tbody></table>
+    </section>
+
+    <section class="admin-section">
       <h2>Settings — OAuth</h2>
       <p>Google / GitHub OAuth is <b>not live</b> until the studio adds its own OAuth client IDs here. No fake OAuth flow is used.</p>
       <form id="settingsForm">
@@ -109,9 +116,10 @@
       document.getElementById('adminEmail').textContent = me.email;
       document.getElementById('adminContent').classList.remove('hidden');
       msg.textContent = 'Admin access confirmed.';
-      const [services, plans, projects, inq, book, settings] = await Promise.all([
+      const [services, plans, projects, inq, book, settings, users] = await Promise.all([
         api('/api/services'), api('/api/plans'), api('/api/projects'),
-        api('/api/admin/inquiries'), api('/api/admin/bookings'), api('/api/admin/settings').catch(() => ({}))
+        api('/api/admin/inquiries'), api('/api/admin/bookings'), api('/api/admin/settings').catch(() => ({})),
+        api('/api/admin/users').catch(() => [])
       ]);
       document.getElementById('statServices').textContent = services.length;
       document.getElementById('statPlans').textContent = plans.length;
@@ -139,6 +147,9 @@
         '<tr><td>' + esc(b.name) + '</td><td>' + esc(b.email) + '</td><td>' + esc(b.plan_name || ('Plan #' + b.plan_id)) + '</td>' +
         '<td><select data-book-status="' + b.id + '"><option ' + (b.status === 'pending' ? 'selected' : '') + '>pending</option><option ' + (b.status === 'confirmed' ? 'selected' : '') + '>confirmed</option><option ' + (b.status === 'cancelled' ? 'selected' : '') + '>cancelled</option></select></td>' +
         '<td><button type="button" data-save-book="' + b.id + '">Save</button></td></tr>').join('') || '<tr><td colspan="5">No bookings yet.</td></tr>';
+      document.getElementById('userRows').innerHTML = users.map(u =>
+        '<tr><td>' + esc(u.name || '') + '</td><td>' + esc(u.email) + '</td><td>' + (u.is_admin ? 'Yes' : 'No') + '</td>' +
+        '<td><button type="button" data-del-user="' + u.id + '">Delete</button></td></tr>').join('') || '<tr><td colspan="4">No users yet.</td></tr>';
       if (settings.google_client_id) document.querySelector('[name=google_client_id]').value = settings.google_client_id;
       if (settings.github_client_id) document.querySelector('[name=github_client_id]').value = settings.github_client_id;
       if (settings.contact_email) document.querySelector('[name=contact_email]').value = settings.contact_email;
@@ -147,6 +158,7 @@
         const t = e.target;
         const get = (sel) => { const el = document.querySelector(sel); return el ? el.value : ''; };
         try {
+          if (t.dataset.delUser) { if (confirm('Delete this user account?')) { await api('/api/admin/users/' + t.dataset.delUser, { method: 'DELETE' }); load(); } }
           if (t.dataset.saveSvc) { const id = t.dataset.saveSvc; await api('/api/admin/services/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-svc-name="' + id + '"]'), description: get('[data-svc-desc="' + id + '"]'), price_from: Number(get('[data-svc-from="' + id + '"]')), price_to: Number(get('[data-svc-to="' + id + '"]')) || null }) }); msg.textContent = 'Service saved.'; }
           if (t.dataset.delSvc) { if (confirm('Delete this service?')) { await api('/api/admin/services/' + t.dataset.delSvc, { method: 'DELETE' }); load(); } }
           if (t.dataset.savePlan) { const id = t.dataset.savePlan; await api('/api/admin/plans/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-plan-name="' + id + '"]'), price: Number(get('[data-plan-price="' + id + '"]')), description: get('[data-plan-desc="' + id + '"]') }) }); msg.textContent = 'Plan saved.'; }

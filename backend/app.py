@@ -206,6 +206,23 @@ def my_requests(user: User = Depends(get_current_user), db: Session = Depends(ge
 
 
 # ---------- admin ----------
+@app.get("/api/admin/users")
+def admin_users(_admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    return [user_out(u) for u in db.query(User).order_by(User.id).all()]
+
+
+@app.delete("/api/admin/users/{user_id}")
+def admin_delete_user(user_id: int, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    if user_id == admin.id:
+        raise HTTPException(status_code=400, detail="You cannot delete your own admin account")
+    row = db.query(User).filter(User.id == user_id).first()
+    if not row:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.query(UserSession).filter(UserSession.user_id == user_id).delete()
+    db.delete(row); db.commit()
+    return {"ok": True}
+
+
 @app.get("/api/admin/inquiries")
 def admin_inquiries(_admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     return [{"id": i.id, "name": i.name, "email": i.email, "service": i.service, "budget": i.budget, "message": i.message, "status": i.status}
