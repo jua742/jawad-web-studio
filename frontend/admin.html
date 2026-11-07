@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Jawad Web Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <nav class="nav-pill">
+    <a class="logo" href="/"><span class="logo-mark">J</span><span class="logo-text">Jawad <em>Web Studio</em> — Admin</span></a>
+    <div class="nav-actions" style="margin-left:auto">
+      <a class="btn btn-ghost btn-sm" href="/">← Back to site</a>
+      <button class="btn btn-dark btn-sm" id="adminLogout" type="button">Log out</button>
+    </div>
+  </nav>
+</header>
+<main class="admin-wrap">
+  <h1>Admin panel</h1>
+  <p id="adminMsg" role="status">Checking your session…</p>
+  <div id="adminContent" class="hidden">
+    <p>Signed in as <b id="adminEmail"></b>. First registered user is the admin. Prices below are draft USD prices — edit them here.</p>
+    <div class="admin-grid">
+      <div class="stat"><strong id="statServices">–</strong><span>Services</span></div>
+      <div class="stat"><strong id="statPlans">–</strong><span>Pricing plans</span></div>
+      <div class="stat"><strong id="statProjects">–</strong><span>Projects</span></div>
+      <div class="stat"><strong id="statInquiries">–</strong><span>Inquiries + bookings</span></div>
+    </div>
+
+    <section class="admin-section">
+      <h2>Services</h2>
+      <table class="admin-table"><thead><tr><th>Name</th><th>Description</th><th>From $</th><th>To $</th><th></th></tr></thead>
+      <tbody id="serviceRows"></tbody></table>
+      <h3>Add service</h3>
+      <form id="addServiceForm"><label>Name <input name="name" required></label>
+        <label>Description <input name="description"></label>
+        <label>Price from (USD) <input name="price_from" type="number" value="249"></label>
+        <label>Price to (USD) <input name="price_to" type="number" value="1499"></label>
+        <button class="btn btn-dark" type="submit">Add service</button></form>
+    </section>
+
+    <section class="admin-section">
+      <h2>Pricing plans (USD)</h2>
+      <table class="admin-table"><thead><tr><th>Name</th><th>Price $</th><th>Description</th><th></th></tr></thead>
+      <tbody id="planRows"></tbody></table>
+    </section>
+
+    <section class="admin-section">
+      <h2>Projects</h2>
+      <table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Client label</th><th></th></tr></thead>
+      <tbody id="projectRows"></tbody></table>
+      <h3>Add project</h3>
+      <form id="addProjectForm"><label>Title <input name="title" required></label>
+        <label>Category <input name="category" value="Web Design"></label>
+        <label>Client label <input name="client_label" value="Sample project"></label>
+        <label>Description <textarea name="description" rows="2"></textarea></label>
+        <button class="btn btn-dark" type="submit">Add project</button></form>
+    </section>
+
+    <section class="admin-section">
+      <h2>Inquiries</h2>
+      <table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Service</th><th>Budget</th><th>Status</th><th></th></tr></thead>
+      <tbody id="inquiryRows"></tbody></table>
+    </section>
+
+    <section class="admin-section">
+      <h2>Bookings</h2>
+      <table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Status</th><th></th></tr></thead>
+      <tbody id="bookingRows"></tbody></table>
+    </section>
+
+    <section class="admin-section">
+      <h2>Settings — OAuth</h2>
+      <p>Google / GitHub OAuth is <b>not live</b> until the studio adds its own OAuth client IDs here. No fake OAuth flow is used.</p>
+      <form id="settingsForm">
+        <label>Google OAuth client ID <input name="google_client_id" placeholder="e.g. 123456…apps.googleusercontent.com"></label>
+        <label>GitHub OAuth client ID <input name="github_client_id" placeholder="e.g. Ov23…"></label>
+        <label>Contact email <input name="contact_email" type="email" placeholder="studio@example.com"></label>
+        <button class="btn btn-dark" type="submit">Save settings</button>
+        <p class="form-msg" id="settingsMsg" role="status"></p>
+      </form>
+    </section>
+  </div>
+  <p id="adminLoginHint" class="hidden">You are not logged in as an admin. <a href="/">Go to the site and log in</a> — the first registered user becomes admin.</p>
+</main>
+<script>
+(function () {
+  const token = localStorage.getItem('jws_token') || '';
+  const msg = document.getElementById('adminMsg');
+  function headers() { return { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }; }
+  async function api(path, opts) {
+    const r = await fetch(path, Object.assign({ headers: headers() }, opts || {}));
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.detail || ('HTTP ' + r.status));
+    return d;
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  document.getElementById('adminLogout').addEventListener('click', () => {
+    localStorage.removeItem('jws_token'); localStorage.removeItem('jws_user'); window.location.href = '/';
+  });
+  async function load() {
+    if (!token) { msg.textContent = 'Not logged in.'; document.getElementById('adminLoginHint').classList.remove('hidden'); return; }
+    try {
+      const me = await api('/api/auth/me');
+      if (!me.is_admin) { msg.textContent = 'This account is not an admin. First registered user is admin.'; document.getElementById('adminLoginHint').classList.remove('hidden'); return; }
+      document.getElementById('adminEmail').textContent = me.email;
+      document.getElementById('adminContent').classList.remove('hidden');
+      msg.textContent = 'Admin access confirmed.';
+      const [services, plans, projects, inq, book, settings] = await Promise.all([
+        api('/api/services'), api('/api/plans'), api('/api/projects'),
+        api('/api/admin/inquiries'), api('/api/admin/bookings'), api('/api/admin/settings').catch(() => ({}))
+      ]);
+      document.getElementById('statServices').textContent = services.length;
+      document.getElementById('statPlans').textContent = plans.length;
+      document.getElementById('statProjects').textContent = projects.length;
+      document.getElementById('statInquiries').textContent = inq.length + book.length;
+      document.getElementById('serviceRows').innerHTML = services.map(s =>
+        '<tr><td><input value="' + esc(s.name) + '" data-svc-name="' + s.id + '"></td>' +
+        '<td><input value="' + esc(s.description || '') + '" data-svc-desc="' + s.id + '"></td>' +
+        '<td><input type="number" value="' + s.price_from + '" data-svc-from="' + s.id + '"></td>' +
+        '<td><input type="number" value="' + (s.price_to || '') + '" data-svc-to="' + s.id + '"></td>' +
+        '<td><button type="button" data-save-svc="' + s.id + '">Save</button> <button type="button" data-del-svc="' + s.id + '">Delete</button></td></tr>').join('');
+      document.getElementById('planRows').innerHTML = plans.map(p =>
+        '<tr><td><input value="' + esc(p.name) + '" data-plan-name="' + p.id + '"></td>' +
+        '<td><input type="number" value="' + p.price + '" data-plan-price="' + p.id + '"></td>' +
+        '<td><input value="' + esc(p.description || '') + '" data-plan-desc="' + p.id + '"></td>' +
+        '<td><button type="button" data-save-plan="' + p.id + '">Save</button></td></tr>').join('');
+      document.getElementById('projectRows').innerHTML = projects.map(p =>
+        '<tr><td>' + esc(p.title) + '</td><td>' + esc(p.category || '') + '</td><td>' + esc(p.client_label || '') + '</td>' +
+        '<td><button type="button" data-del-proj="' + p.id + '">Delete</button></td></tr>').join('');
+      document.getElementById('inquiryRows').innerHTML = inq.map(i =>
+        '<tr><td>' + esc(i.name) + '</td><td>' + esc(i.email) + '</td><td>' + esc(i.service || '') + '</td><td>' + esc(i.budget || '') + '</td>' +
+        '<td><select data-inq-status="' + i.id + '"><option ' + (i.status === 'new' ? 'selected' : '') + '>new</option><option ' + (i.status === 'contacted' ? 'selected' : '') + '>contacted</option><option ' + (i.status === 'closed' ? 'selected' : '') + '>closed</option></select></td>' +
+        '<td><button type="button" data-save-inq="' + i.id + '">Save</button></td></tr>').join('') || '<tr><td colspan="6">No inquiries yet.</td></tr>';
+      document.getElementById('bookingRows').innerHTML = book.map(b =>
+        '<tr><td>' + esc(b.name) + '</td><td>' + esc(b.email) + '</td><td>' + esc(b.plan_name || ('Plan #' + b.plan_id)) + '</td>' +
+        '<td><select data-book-status="' + b.id + '"><option ' + (b.status === 'pending' ? 'selected' : '') + '>pending</option><option ' + (b.status === 'confirmed' ? 'selected' : '') + '>confirmed</option><option ' + (b.status === 'cancelled' ? 'selected' : '') + '>cancelled</option></select></td>' +
+        '<td><button type="button" data-save-book="' + b.id + '">Save</button></td></tr>').join('') || '<tr><td colspan="5">No bookings yet.</td></tr>';
+      if (settings.google_client_id) document.querySelector('[name=google_client_id]').value = settings.google_client_id;
+      if (settings.github_client_id) document.querySelector('[name=github_client_id]').value = settings.github_client_id;
+      if (settings.contact_email) document.querySelector('[name=contact_email]').value = settings.contact_email;
+
+      document.addEventListener('click', async (e) => {
+        const t = e.target;
+        const get = (sel) => { const el = document.querySelector(sel); return el ? el.value : ''; };
+        try {
+          if (t.dataset.saveSvc) { const id = t.dataset.saveSvc; await api('/api/admin/services/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-svc-name="' + id + '"]'), description: get('[data-svc-desc="' + id + '"]'), price_from: Number(get('[data-svc-from="' + id + '"]')), price_to: Number(get('[data-svc-to="' + id + '"]')) || null }) }); msg.textContent = 'Service saved.'; }
+          if (t.dataset.delSvc) { if (confirm('Delete this service?')) { await api('/api/admin/services/' + t.dataset.delSvc, { method: 'DELETE' }); load(); } }
+          if (t.dataset.savePlan) { const id = t.dataset.savePlan; await api('/api/admin/plans/' + id, { method: 'PUT', body: JSON.stringify({ name: get('[data-plan-name="' + id + '"]'), price: Number(get('[data-plan-price="' + id + '"]')), description: get('[data-plan-desc="' + id + '"]') }) }); msg.textContent = 'Plan saved.'; }
+          if (t.dataset.delProj) { if (confirm('Delete this project?')) { await api('/api/admin/projects/' + t.dataset.delProj, { method: 'DELETE' }); load(); } }
+          if (t.dataset.saveInq) { const id = t.dataset.saveInq; await api('/api/admin/inquiries/' + id, { method: 'PUT', body: JSON.stringify({ status: get('[data-inq-status="' + id + '"]') }) }); msg.textContent = 'Inquiry saved.'; }
+          if (t.dataset.saveBook) { const id = t.dataset.saveBook; await api('/api/admin/bookings/' + id, { method: 'PUT', body: JSON.stringify({ status: get('[data-book-status="' + id + '"]') }) }); msg.textContent = 'Booking saved.'; }
+        } catch (err) { msg.textContent = 'Error: ' + err.message; }
+      });
+    } catch (err) { msg.textContent = 'Admin check failed: ' + err.message; document.getElementById('adminLoginHint').classList.remove('hidden'); }
+  }
+  document.getElementById('addServiceForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); const fd = new FormData(e.target);
+    try { await api('/api/admin/services', { method: 'POST', body: JSON.stringify({ name: fd.get('name'), description: fd.get('description'), price_from: Number(fd.get('price_from')), price_to: Number(fd.get('price_to')) }) }); msg.textContent = 'Service added.'; load(); } catch (err) { msg.textContent = 'Error: ' + err.message; }
+  });
+  document.getElementById('addProjectForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); const fd = new FormData(e.target);
+    try { await api('/api/admin/projects', { method: 'POST', body: JSON.stringify({ title: fd.get('title'), category: fd.get('category'), client_label: fd.get('client_label'), description: fd.get('description') }) }); msg.textContent = 'Project added.'; load(); } catch (err) { msg.textContent = 'Error: ' + err.message; }
+  });
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); const fd = new FormData(e.target);
+    try { await api('/api/admin/settings', { method: 'PUT', body: JSON.stringify({ google_client_id: fd.get('google_client_id'), github_client_id: fd.get('github_client_id'), contact_email: fd.get('contact_email') }) }); document.getElementById('settingsMsg').textContent = 'Settings saved. OAuth is live only after valid client IDs are entered — no fake flow is used.'; } catch (err) { document.getElementById('settingsMsg').textContent = 'Error: ' + err.message; }
+  });
+  load();
+})();
+</script>
+</body>
+</html>

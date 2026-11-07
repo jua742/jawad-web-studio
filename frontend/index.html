@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jawad Web Studio — We craft digital experiences</title>
+<meta name="description" content="Jawad Web Studio — Web Design, Web Development, UI/UX, E-commerce, SEO and Python/FastAPI backends. Portfolio, services and pricing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#services">Skip to services</a>
+
+<header class="site-header">
+  <nav class="nav-pill" aria-label="Main navigation">
+    <a class="logo" href="#top" aria-label="Jawad Web Studio home">
+      <span class="logo-mark">J</span><span class="logo-text">Jawad <em>Web Studio</em></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#work">Projects</a>
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+      <a href="#code">Code</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-status" id="navStatus">Taking on projects for Q4 2026</span>
+      <a class="btn btn-dark btn-sm" href="#contact" data-book-cta>Book a strategy call</a>
+      <button class="btn btn-ghost btn-sm" id="loginBtn" type="button">Log in</button>
+      <button class="btn btn-ghost btn-sm hidden" id="accountBtn" type="button">My account</button>
+      <button class="btn btn-ghost btn-sm hidden" id="logoutBtn" type="button">Log out</button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+    </div>
+  </nav>
+  <div class="mobile-menu hidden" id="mobileMenu">
+    <a href="#work">Projects</a>
+    <a href="#services">Services</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#process">Process</a>
+    <a href="#contact">Contact</a>
+    <a href="#code">Code</a>
+    <button class="btn btn-dark" id="mobileLoginBtn" type="button">Log in / Sign up</button>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero reveal">
+    <p class="eyebrow">Jawad Web Studio — Est. for brands that want to be seen</p>
+    <h1>We craft digital experiences<br>for brands ready to dominate<br><span class="h1-accent">their category online.</span></h1>
+    <p class="hero-sub">Hand-coded websites in HTML, CSS, JavaScript &amp; Python — no generic templates. Design, code, backend and launch, all in one studio.</p>
+    <div class="hero-cta">
+      <a class="btn btn-copper" href="#contact">Start a project <span aria-hidden="true">→</span></a>
+      <a class="btn btn-outline" href="#work">See our work</a>
+      <span class="badge">★ Certified Partner <b>Featured</b></span>
+    </div>
+    <div class="hero-meta">
+      <div><strong>6</strong><span>Services</span></div>
+      <div><strong>4</strong><span>Sample projects</span></div>
+      <div><strong>3</strong><span>Pricing plans in USD</span></div>
+      <div><strong>100%</strong><span>Hand-coded</span></div>
+    </div>
+    <p class="tech-line">Built with: <span>HTML5</span> · <span>CSS3</span> · <span>JavaScript</span> · <span>Python / FastAPI</span></p>
+  </section>
+
+  <!-- WORK RIBBON — 3D scrolling carousel -->
+  <section class="ribbon-section" aria-label="Work ribbon">
+    <div class="section-head">
+      <span class="section-number">01</span><span class="section-label">Featured work — drag or scroll</span>
+    </div>
+    <div class="ribbon-wrap" id="ribbonWrap">
+      <div class="ribbon" id="ribbon"><!-- cards injected by script.js from /api/projects --></div>
+    </div>
+    <div class="ribbon-controls">
+      <button id="ribbonPrev" type="button" aria-label="Previous work">← Prev</button>
+      <span id="ribbonHint">Drag the ribbon, scroll sideways, or use the arrows.</span>
+      <button id="ribbonNext" type="button" aria-label="Next work">Next →</button>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about reveal" id="about">
+    <div class="section-head"><span class="section-number">02</span><span class="section-label">About the studio</span></div>
+    <h2>Strategy-led creatives, delivering results in digital and beyond.</h2>
+    <div class="about-grid">
+      <p>Through research, creative thinking and iteration we help growing brands realise their digital full potential. Every site is structured in HTML first, designed in CSS, made interactive in JavaScript, and powered by a Python / FastAPI backend with a real database.</p>
+      <p>We do not ship a generic AI-looking page. We pick a palette, a typeface and a layout for your brand — then we code it, test it, fix the bugs, and run it before we hand it over.</p>
+      <a class="btn btn-dark" href="#contact">About our studio</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services reveal" id="services">
+    <div class="section-head"><span class="section-number">03</span><span class="section-label">What we do</span></div>
+    <h2>Services, built to ship — not just to look good.</h2>
+    <p class="section-sub">Prices are draft starting prices in USD. Final quote depends on scope — confirm in the inquiry form.</p>
+    <div class="service-grid" id="serviceGrid"><!-- injected from /api/services --></div>
+  </section>
+
+  <!-- WORK / PORTFOLIO -->
+  <section class="work reveal" id="work">
+    <div class="section-head"><span class="section-number">04</span><span class="section-label">Selected work</span></div>
+    <h2>Our projects</h2>
+    <p class="section-sub">Sample projects — clearly labelled samples, not real client work.</p>
+    <div class="work-grid" id="workGrid"><!-- injected from /api/projects --></div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing reveal" id="pricing">
+    <div class="section-head"><span class="section-number">05</span><span class="section-label">Pricing — USD</span></div>
+    <h2>Simple pricing, in dollars.</h2>
+    <p class="section-sub">Draft prices. Editable in the admin panel. All plans include responsive design, SEO basics and launch support.</p>
+    <div class="pricing-toggle" role="group" aria-label="Pricing view">
+      <button class="toggle-btn active" id="toggleOnetime" type="button">One-time project</button>
+      <button class="toggle-btn" id="toggleNote" type="button">What is included?</button>
+    </div>
+    <p class="toggle-note hidden" id="pricingNote">Every plan is a one-time project price in USD. Monthly care / hosting is quoted separately — ask in the inquiry form.</p>
+    <div class="plan-grid" id="planGrid"><!-- injected from /api/plans --></div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process reveal" id="process">
+    <div class="section-head"><span class="section-number">06</span><span class="section-label">How we work</span></div>
+    <h2>HTML first. Then CSS. Then JavaScript. Then Python.</h2>
+    <ol class="process-steps">
+      <li><b>01 — HTML structure</b><span>Header, hero, services, work, pricing, contact, footer — semantic, accessible markup.</span></li>
+      <li><b>02 — CSS design</b><span>Palette, Fraunces + Inter type, 3D ribbon, responsive layout. No lime-green / harsh-orange generic look.</span></li>
+      <li><b>03 — JavaScript</b><span>Every button works: menu, ribbon drag, forms, login, booking, admin actions.</span></li>
+      <li><b>04 — Python / FastAPI backend</b><span>REST APIs, auth, database. Tested with curl before delivery.</span></li>
+      <li><b>05 — Run, debug &amp; ship</b><span>Compile, run, fix errors, test again, then save to GitHub.</span></li>
+    </ol>
+  </section>
+
+  <!-- CODE / TECH STACK -->
+  <section class="code reveal" id="code">
+    <div class="section-head"><span class="section-number">07</span><span class="section-label">Built with code</span></div>
+    <h2>HTML, CSS, JavaScript &amp; Python — see the actual code.</h2>
+    <p class="section-sub">This site is plain code. Frontend: <code>frontend/index.html</code>, <code>frontend/styles.css</code>, <code>frontend/script.js</code>. Backend: <code>backend/app.py</code> (FastAPI) + SQLite. Switch tabs to inspect a sample.</p>
+    <div class="code-window">
+      <div class="code-tabs" role="tablist">
+        <button class="code-tab active" data-tab="html" type="button">index.html</button>
+        <button class="code-tab" data-tab="css" type="button">styles.css</button>
+        <button class="code-tab" data-tab="js" type="button">script.js</button>
+        <button class="code-tab" data-tab="py" type="button">server.py</button>
+      </div>
+      <pre id="codePre"><code id="codeBlock"></code></pre>
+      <button class="btn btn-dark btn-sm" id="copyCodeBtn" type="button">Copy code</button>
+      <span id="copyMsg" role="status"></span>
+    </div>
+    <div class="tech-cards">
+      <div><b>HTML5</b><span>Semantic structure, forms, admin pages.</span></div>
+      <div><b>CSS3</b><span>3D ribbon, parallax, responsive design.</span></div>
+      <div><b>JavaScript</b><span>Every button works — no dead controls.</span></div>
+      <div><b>Python / FastAPI</b><span>APIs, auth, SQLite database.</span></div>
+    </div>
+    <p class="deliver-note">Every project is delivered with clean source files — index.html, styles.css, app.js, and a Python backend where needed.</p>
+  </section>
+
+  <!-- TESTIMONIALS — clearly labelled samples -->
+  <section class="testimonials reveal" id="testimonials">
+    <div class="section-head"><span class="section-number">08</span><span class="section-label">Kind words — sample text</span></div>
+    <h2>What sample clients say.</h2>
+    <p class="section-sub">Sample testimonials for layout only — not real people or real clients.</p>
+    <div class="testi-grid">
+      <blockquote>“The new site finally looks like our brand — and the booking form actually works.”<cite>— Sample Client A, Sample Store</cite></blockquote>
+      <blockquote>“Clear pricing, fast replies, and a site we can update ourselves in the admin panel.”<cite>— Sample Client B, Sample Studio</cite></blockquote>
+      <blockquote>“The 3D work ribbon is the first thing visitors mention. It feels crafted, not generated.”<cite>— Sample Client C, Sample Brand</cite></blockquote>
+    </div>
+  </section>
+
+  <!-- CONTACT / INQUIRY -->
+  <section class="contact reveal" id="contact">
+    <div class="section-head"><span class="section-number">09</span><span class="section-label">Start a project</span></div>
+    <h2>Tell us about your project.</h2>
+    <form id="inquiryForm" novalidate>
+      <label>Name <input name="name" required autocomplete="name" placeholder="Your name"></label>
+      <label>Email <input name="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>Service
+        <select name="service" id="inquiryService">
+          <option>Web Design</option><option>Web Development</option><option>UI/UX Design</option>
+          <option>E-commerce</option><option>SEO</option><option>Python/FastAPI Backend</option>
+        </select>
+      </label>
+      <label>Budget (USD)
+        <select name="budget">
+          <option>$249 – $499</option><option>$500 – $999</option><option>$1,000 – $1,999</option><option>$2,000+</option>
+        </select>
+      </label>
+      <label>Message <textarea name="message" rows="4" required placeholder="What do you need built?"></textarea></label>
+      <button class="btn btn-copper" type="submit">Send inquiry</button>
+      <p class="form-msg" id="inquiryMsg" role="status"></p>
+    </form>
+    <div class="contact-side">
+      <h3>Prefer to book a plan directly?</h3>
+      <p>Pick a pricing plan above and press “Book this plan”. You can also log in to see “My requests”.</p>
+      <button class="btn btn-outline" id="myRequestsBtn" type="button">My requests</button>
+      <div id="myRequests" class="my-requests hidden"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><b>Jawad Web Studio</b><p>Hand-coded in HTML, CSS, JavaScript &amp; Python.</p></div>
+    <div><b>Explore</b><a href="#services">Services</a><a href="#work">Projects</a><a href="#pricing">Pricing</a><a href="#code">Code</a></div>
+    <div><b>Account</b><a href="#" id="footerLogin">Log in / Sign up</a><a href="/admin.html">Admin panel</a><a href="#contact">Contact</a></div>
+  </div>
+  <p class="footer-note">© 2026 Jawad Web Studio — sample portfolio site. Prices are draft USD prices, editable in admin.</p>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal hidden" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="authClose" type="button" aria-label="Close">×</button>
+    <h3 id="authTitle">Welcome back — sign in</h3>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-mode="login" type="button">Log in</button>
+      <button class="auth-tab" data-mode="register" type="button">Sign up</button>
+    </div>
+    <form id="authForm">
+      <label>Name (sign up only) <input name="name" id="authName" autocomplete="name" placeholder="Your name"></label>
+      <label>Email <input name="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password <input name="password" type="password" required autocomplete="current-password" minlength="6" placeholder="At least 6 characters"></label>
+      <button class="btn btn-dark" type="submit" id="authSubmit">Log in</button>
+      <p class="form-msg" id="authMsg" role="status"></p>
+    </form>
+    <div class="oauth">
+      <button class="btn btn-outline oauth-btn" id="googleBtn" type="button">Continue with Google</button>
+      <button class="btn btn-outline oauth-btn" id="githubBtn" type="button">Continue with GitHub</button>
+      <p class="oauth-note">OAuth needs the studio’s own Google / GitHub client IDs in Admin → Settings. It is not live yet — email login is the active route. No fake OAuth flow is used.</p>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal hidden" id="bookModal" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="bookClose" type="button" aria-label="Close">×</button>
+    <h3 id="bookTitle">Book a plan</h3>
+    <p id="bookPlanInfo"></p>
+    <form id="bookForm">
+      <label>Name <input name="name" required placeholder="Your name"></label>
+      <label>Email <input name="email" type="email" required placeholder="you@example.com"></label>
+      <label>Notes <textarea name="notes" rows="3" placeholder="Anything we should know?"></textarea></label>
+      <button class="btn btn-copper" type="submit">Send booking request</button>
+      <p class="form-msg" id="bookMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast" role="status"></div>
+<script src="/script.js" defer></script>
+</body>
+</html>
